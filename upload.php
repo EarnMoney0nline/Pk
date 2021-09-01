@@ -1,30 +1,29 @@
-<html>
-<body>
-  
+<?php
+$statusMsg = 'upload/';
 
+//file upload path
+$targetDir = "upload/";
+$fileName = basename($_FILES["file"]["name"]);
+$targetFilePath = $targetDir . $fileName;
+$fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);
 
-
-
-
-  <?php
-/* Get the name of the uploaded file */
-$filename = $_FILES['file']['name']
-
-/* Choose where to save the uploaded file */
-$loacation ='upload'.$filename;
-
-/* Save the uploaded file to the local filesystem */
-move_uploaded_file($_FILES,['file']['tmp_name']){
-	echo "File uploaded Successfully";
-
-}else{  echo "Error uploading File";  
-
+if(isset($_POST["submit"]) && !empty($_FILES["file"]["name"])) {
+    //allow certain file formats
+    $allowTypes = array('jpg','png','jpeg','gif','pdf');
+    if(in_array($fileType, $allowTypes)){
+        //upload file to server
+        if(move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)){
+            $statusMsg = "The file ".$fileName. " has been uploaded.";
+        }else{
+            $statusMsg = "Sorry, there was an error uploading your file.";
+        }
+    }else{
+        $statusMsg = 'Sorry, only JPG, JPEG, PNG, GIF, & PDF files are allowed to upload.';
+    }
+}else{
+    $statusMsg = 'Please select a file to upload.';
 }
 
-
-
-
+//display status message
+echo $statusMsg;
 ?>
-
-</body>
-</html>
